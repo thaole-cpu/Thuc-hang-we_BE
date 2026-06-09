@@ -1,5 +1,13 @@
-import * as crypto from 'crypto';
-Object.assign(globalThis, { crypto: crypto.webcrypto });
+import { webcrypto } from 'node:crypto';
+// Node 22+ đã có globalThis.crypto (read-only) — chỉ polyfill khi thiếu (Node cũ)
+if (typeof globalThis.crypto === 'undefined') {
+  Object.defineProperty(globalThis, 'crypto', {
+    value: webcrypto,
+    configurable: true,
+    enumerable: true,
+    writable: true,
+  });
+}
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express'; 
